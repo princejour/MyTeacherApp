@@ -44,13 +44,16 @@ fun ParentInboxScreen(
     messages: List<TeacherMessage>,
     freeOpened: Map<String, Set<String>>,
     adUnlocked: Set<String>,
+    canRequestAds: Boolean,
+    isRewardedAdReady: Boolean,
     onOpenFree: (String, String) -> Unit,
-    onRewardedUnlock: (String) -> Unit,
+    onRewardedUnlock: (String, (String) -> Unit) -> Unit,
     onBack: () -> Unit
 ) {
     val currentStudent = student
     val studentMessages = messages.filter { it.studentId == currentStudent?.id }
     val openedIds = freeOpened[currentStudent?.id.orEmpty()].orEmpty()
+    var adNotice by remember { mutableStateOf<String?>(null) }
 
     Scaffold(topBar = { TopAppBar(title = { Text("Message Inbox") }, navigationIcon = { TextButton(onClick = onBack) { Text("Back") } }) }) { padding ->
         if (currentStudent == null) {
@@ -60,6 +63,10 @@ fun ParentInboxScreen(
                 item {
                     Text("Messages for ${currentStudent.name}", style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
                     Text("Free monthly openings: ${openedIds.size}/5")
+                    adNotice?.let {
+                        Spacer(modifier = Modifier.height(8.dp))
+                        Text(it, color = MaterialTheme.colorScheme.error, style = MaterialTheme.typography.bodySmall)
+                    }
                 }
                 items(studentMessages) { message ->
                     val openedForFree = openedIds.contains(message.id)
@@ -69,8 +76,15 @@ fun ParentInboxScreen(
                         message = message,
                         isOpen = openedForFree || unlockedByAd,
                         canOpenFree = canOpenFree,
+                        canRequestAds = canRequestAds,
+                        isRewardedAdReady = isRewardedAdReady,
                         onOpenFree = { onOpenFree(currentStudent.id, message.id) },
-                        onRewardedUnlock = { onRewardedUnlock(message.id) }
+                        onRewardedUnlock = {
+                            adNotice = null
+                            onRewardedUnlock(message.id) { errorMessage ->
+                                adNotice = errorMessage
+                            }
+                        }
                     )
                 }
             }
@@ -83,6 +97,8 @@ fun MessageCard(
     message: TeacherMessage,
     isOpen: Boolean,
     canOpenFree: Boolean,
+    canRequestAds: Boolean,
+    isRewardedAdReady: Boolean,
     onOpenFree: () -> Unit,
     onRewardedUnlock: () -> Unit
 ) {
@@ -97,7 +113,23 @@ fun MessageCard(
                 Button(onClick = onOpenFree, modifier = Modifier.fillMaxWidth()) { Text("Open Free Message") }
             } else {
                 Text("This message is locked after the monthly free limit.")
-                Button(onClick = onRewardedUnlock, modifier = Modifier.fillMaxWidth()) { Text("Watch Test Rewarded Ad to Unlock") }
+                Text(
+                    "It unlocks only after a rewarded ad is completed.",
+                    style = MaterialTheme.typography.bodySmall
+                )
+                Button(
+                    onClick = onRewardedUnlock,
+                    enabled = canRequestAds,
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Text(
+                        when {
+                            !canRequestAds -> "Ads unavailable"
+                            isRewardedAdReady -> "Watch Ad to Unlock"
+                            else -> "Prepare Rewarded Ad"
+                        }
+                    )
+                }
             }
         }
     }
