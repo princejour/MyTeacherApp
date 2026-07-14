@@ -5,12 +5,15 @@ on:
   push:
     branches:
       - main
+  pull_request:
+    branches:
+      - main
 
 permissions:
   contents: write
 
 concurrency:
-  group: myteacher-admob-test
+  group: myteacher-admob-test-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
@@ -46,6 +49,7 @@ jobs:
           if-no-files-found: error
 
       - name: Publish rolling test release
+        if: github.event_name != 'pull_request'
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
