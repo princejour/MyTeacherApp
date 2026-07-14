@@ -12,8 +12,23 @@ android {
         applicationId = "com.walhero.myteacher"
         minSdk = 24
         targetSdk = 36
-        versionCode = 1
-        versionName = "1.0"
+        versionCode = 2
+        versionName = "1.1"
+
+        // Google sample IDs are intentionally used until My Teacher is created in AdMob.
+        // Replace both values with the dedicated My Teacher App ID and Rewarded Ad Unit ID
+        // before a production release.
+        manifestPlaceholders["adMobAppId"] = "ca-app-pub-3940256099942544~3347511713"
+        buildConfigField(
+            "String",
+            "ADMOB_REWARDED_AD_UNIT_ID",
+            "\"ca-app-pub-3940256099942544/5224354917\""
+        )
+        buildConfigField(
+            "String",
+            "PRIVACY_POLICY_URL",
+            "\"https://princejour.github.io/my-teacher-privacy.html\""
+        )
     }
 
     buildTypes {
@@ -33,6 +48,7 @@ android {
 
     buildFeatures {
         compose = true
+        buildConfig = true
     }
 }
 
@@ -45,5 +61,9 @@ dependencies {
     implementation("androidx.compose.ui:ui-graphics")
     implementation("androidx.compose.ui:ui-tooling-preview")
     implementation("androidx.compose.material3:material3")
+
+    implementation("com.google.android.gms:play-services-ads:23.0.0")
+    implementation("com.google.android.ump:user-messaging-platform:4.0.0")
+
     debugImplementation("androidx.compose.ui:ui-tooling")
 }
