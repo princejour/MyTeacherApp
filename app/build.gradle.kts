@@ -24,8 +24,9 @@ android {
 
     buildTypes {
         debug {
-            // Google sample IDs protect the AdMob account during development and APK testing.
-            manifestPlaceholders["adMobAppId"] = "ca-app-pub-3940256099942544~3347511713"
+            // Use the real My Teacher App ID so its published UMP message can be tested.
+            // Keep Google's rewarded test unit to protect the AdMob account during testing.
+            manifestPlaceholders["adMobAppId"] = "ca-app-pub-2807969310197931~7450138818"
             buildConfigField(
                 "String",
                 "ADMOB_REWARDED_AD_UNIT_ID",
