@@ -4,40 +4,53 @@ Premium Android app for secure parent-teacher communication, student message del
 
 ## Purpose
 
-My Teacher helps teachers communicate with parents through a simple, secure, and mobile-first Android experience. Teachers can manage students, send messages, and parents can access their child-specific messages using a private access code.
+My Teacher helps teachers communicate with parents through a simple, secure, and mobile-first Android experience. Teachers can manage students, send messages, and parents can access child-specific messages using a private family code.
 
 ## Core Features
 
-- Teacher login
-- Teacher password change
-- Student list import
-- Parent access code per student
-- Secure parent message inbox
-- Monthly free message limit
-- Rewarded ad unlock after the free monthly limit
-- Firebase-ready architecture
-- Google Play preparation documents
-- Premium documentation for store release
+- Teacher login and passcode change
+- Student list and private family access code per student
+- Parent message inbox
+- Five free message openings per month
+- Rewarded-ad unlock after the free monthly limit
+- Google AdMob SDK integration
+- Google UMP consent flow before ad requests
+- Privacy choices entry point when required
+- Public Privacy Policy and app-ads.txt support
+- Firebase-ready documentation for future cloud storage
 
 ## Parent Message Access Logic
 
-Parents can open 5 messages for free each month. Starting from the 6th message, the message is locked until the parent watches a rewarded ad. After the rewarded ad is completed successfully, the message becomes unlocked.
+Parents can open 5 messages for free each month. Starting from the 6th message, a message remains locked until a rewarded ad is completed. The app unlocks the message only from the earned-reward callback; loading, opening, failing, or dismissing an ad does not unlock it.
 
-## Planned Android Package
+## Android Package
 
 ```text
 com.walhero.myteacher
 ```
 
-## Planned Store Name
+## Store Name
 
 ```text
 My Teacher
 ```
 
-## Repository Status
+## AdMob Development Status
 
-This repository is being prepared as the English premium version of the parent-teacher communication app. The documentation, store assets, privacy notes, and release checklist are prepared before the Android source code is added.
+The technical AdMob and UMP integration is present. Google sample IDs are intentionally configured during development:
+
+```text
+Sample App ID: ca-app-pub-3940256099942544~3347511713
+Rewarded test ID: ca-app-pub-3940256099942544/5224354917
+```
+
+Before production, create My Teacher as a separate app in AdMob and replace both sample IDs in `app/build.gradle.kts`. Never reuse the Walhero Live Wallpaper App ID or ad-unit ID.
+
+## Privacy and Developer Website
+
+- Privacy Policy: `https://princejour.github.io/my-teacher-privacy.html`
+- Developer website: `https://princejour.github.io/`
+- app-ads.txt: `https://princejour.github.io/app-ads.txt`
 
 ## Documentation
 
@@ -52,11 +65,11 @@ This repository is being prepared as the English premium version of the parent-t
 - [Screenshots Guide](docs/screenshots-guide.md)
 - [Release Checklist](docs/release-checklist.md)
 - [Firebase Setup](docs/firebase-setup.md)
-- [AdMob Rewarded Ads](docs/admob-rewarded-ads.md)
+- [AdMob, UMP, and Rewarded Ads](docs/admob-rewarded-ads.md)
 
 ## Important Notice
 
-This app handles school communication data. Production release must use real Firebase configuration, proper Firestore security rules, a valid privacy policy, and Google Play Data Safety declarations that match the app behavior.
+The current app keeps demo school communication state locally. If Firebase or another backend is added, production release must use secure authentication and database rules, and the Privacy Policy and store Data Safety declarations must be updated to match the released behavior.
 
 ## License
 
