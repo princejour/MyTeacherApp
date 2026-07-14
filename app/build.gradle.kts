@@ -15,15 +15,6 @@ android {
         versionCode = 2
         versionName = "1.1"
 
-        // Google sample IDs are intentionally used until My Teacher is created in AdMob.
-        // Replace both values with the dedicated My Teacher App ID and Rewarded Ad Unit ID
-        // before a production release.
-        manifestPlaceholders["adMobAppId"] = "ca-app-pub-3940256099942544~3347511713"
-        buildConfigField(
-            "String",
-            "ADMOB_REWARDED_AD_UNIT_ID",
-            "\"ca-app-pub-3940256099942544/5224354917\""
-        )
         buildConfigField(
             "String",
             "PRIVACY_POLICY_URL",
@@ -32,7 +23,25 @@ android {
     }
 
     buildTypes {
+        debug {
+            // Google sample IDs protect the AdMob account during development and APK testing.
+            manifestPlaceholders["adMobAppId"] = "ca-app-pub-3940256099942544~3347511713"
+            buildConfigField(
+                "String",
+                "ADMOB_REWARDED_AD_UNIT_ID",
+                "\"ca-app-pub-3940256099942544/5224354917\""
+            )
+        }
+
         release {
+            // Dedicated production IDs created for My Teacher in AdMob.
+            manifestPlaceholders["adMobAppId"] = "ca-app-pub-2807969310197931~7450138818"
+            buildConfigField(
+                "String",
+                "ADMOB_REWARDED_AD_UNIT_ID",
+                "\"ca-app-pub-2807969310197931/8753134707\""
+            )
+
             isMinifyEnabled = false
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
