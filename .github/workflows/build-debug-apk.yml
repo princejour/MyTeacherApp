@@ -1,10 +1,17 @@
-name: Build Debug APK
+name: Build AdMob Test APK
 
 on:
   workflow_dispatch:
   push:
     branches:
       - main
+
+permissions:
+  contents: write
+
+concurrency:
+  group: myteacher-admob-test
+  cancel-in-progress: true
 
 jobs:
   build:
@@ -26,10 +33,25 @@ jobs:
           echo "$RUNNER_TEMP/gradle/gradle-9.3.1/bin" >> $GITHUB_PATH
 
       - name: Build debug APK
-        run: gradle :app:assembleDebug
+        run: gradle :app:assembleDebug --stacktrace
 
-      - name: Upload APK
+      - name: Prepare APK
+        run: cp app/build/outputs/apk/debug/app-debug.apk MyTeacher-AdMob-Test.apk
+
+      - name: Upload workflow artifact
         uses: actions/upload-artifact@v4
         with:
-          name: MyTeacher-debug-apk
-          path: app/build/outputs/apk/debug/*.apk
+          name: MyTeacher-AdMob-Test
+          path: MyTeacher-AdMob-Test.apk
+          if-no-files-found: error
+
+      - name: Publish rolling test release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release delete admob-test --yes --cleanup-tag || true
+          gh release create admob-test MyTeacher-AdMob-Test.apk \
+            --target "$GITHUB_SHA" \
+            --title "My Teacher — AdMob Test APK" \
+            --notes "Testing build: real My Teacher AdMob App ID for the published UMP consent message, with Google's rewarded test ad unit. This APK does not request production rewarded ads." \
+            --prerelease
